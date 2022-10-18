@@ -24,7 +24,7 @@ def after_request(response):
 
 @app.route("/")
 def hello_world():
-    retStruc = {"app": "eCodices NL service", "version": "0.1"}
+    retStruc = {"app": "Diplo service", "version": "0.1"}
     return json.dumps(retStruc)
 
 @app.route("/facet", methods=['GET'])
@@ -65,7 +65,6 @@ def manuscript():
 @app.route("/get_collection", methods=["POST"])
 def get_collection():
     data = request.get_json()
-    print(data)
     collection_items = index.get_collection_items(data["collection"])
     return json.dumps(collection_items);
 

@@ -6,7 +6,7 @@ class Index:
     def __init__(self, config):
         self.config = config
         # self.es = Elasticsearch(hosts=[{"host": "ecodices_es"}], retry_on_timeout=True)
-        self.client = Elasticsearch()
+        self.client = Elasticsearch(hosts=[{"host": "diplo_es"}], retry_on_timeout=True)
 
     def no_case(self, str_in):
         str = str_in.strip()
@@ -44,7 +44,6 @@ class Index:
 
 
     def get_filter_facet(self, field, amount, facet_filter):
-        print(facet_filter)
         ret_array = []
         response = self.client.search(
             index="diplo",
