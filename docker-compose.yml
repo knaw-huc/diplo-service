@@ -13,8 +13,6 @@ services:
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true
-    ports:
-      - 9200:9200
     volumes:
       - diplo_es:/usr/share/elasticsearch/data
       - /home/robz/:/home
@@ -30,8 +28,6 @@ services:
       - VIRTUAL_HOST=diploservice.sd.di.huc.knaw.nl
     expose:
       - 5000
-    ports:
-      - 5000:5000
     volumes:
       - /home/robz/:/home
     networks:
