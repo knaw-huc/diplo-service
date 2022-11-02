@@ -1,6 +1,9 @@
 from flask import Flask, request
 import json
 from elastic_index import Index
+from lxml import etree
+import unicodedata
+
 
 
 app = Flask(__name__)
@@ -12,6 +15,22 @@ config = {
 }
 
 index = Index(config)
+
+def grab_value(path, root, ns):
+    content = root.findall(path, ns)
+    if content and content[0].text is not None:
+        return unicodedata.normalize("NFKD", content[0].text).strip()
+    else:
+        return ""
+
+def grab_list(name, path, root, ns):
+    ret_arr = []
+    content = root.findall(path, ns)
+    for item in content:
+        buffer = {name : unicodedata.normalize("NFKD", item.text).strip()}
+        if buffer not in ret_arr:
+            ret_arr.append(buffer)
+    return ret_arr
 
 
 @app.after_request
@@ -68,7 +87,16 @@ def get_collection():
     collection_items = index.get_collection_items(data["collection"])
     return json.dumps(collection_items);
 
-
+@app.route("/detail", methods=['GET'])
+def get_detail():
+    rec = request.args.get("rec")
+    file = etree.parse("/data/records/"+rec+".cmdi")
+    root = file.getroot()
+    ns = {"cmd": "http://www.clarin.eu/cmd/","xml": "http://www.w3.org/XML/1998/namespace"}
+    ttl = grab_value("./cmd:Components/cmd:Interview/cmd:Titel[@xml:lang='nl']", root, ns)
+    tel = grab_value("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Contact/cmd:Telephone", root, ns)
+    retStruc = {"_id": rec,"titel": ttl, "telefoon": tel}
+    return json.dumps(retStruc)
 
 
 

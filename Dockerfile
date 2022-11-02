@@ -25,4 +25,6 @@ COPY ./src/elastic_index.py /app
 ENV FLASK_APP=/app/app.py
 ENV FLASK_ENV=production
 
+EXPOSE 5000
+
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "-t", "60", "-w", "4", "app:app"]

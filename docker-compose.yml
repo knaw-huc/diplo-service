@@ -2,8 +2,12 @@ version: '2'
 
 networks:
   diplo_network:
-    external:
-      name: nginxproxynetwork
+    #external:
+    #  name: nginxproxynetwork
+    external: false
+
+volumes:
+  diplo_es:
 
 services:
 
@@ -14,8 +18,10 @@ services:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true
     volumes:
-      - diplo_es:/usr/share/elasticsearch/data
-      - /home/robz/:/home
+    #  - diplo_es:/usr/share/elasticsearch/data
+      - ./data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
     networks:
       - diplo_network
 
@@ -26,9 +32,9 @@ services:
     container_name: diplo_service
     environment:
       - VIRTUAL_HOST=diploservice.sd.di.huc.knaw.nl
-    expose:
-      - 5000
+    ports:
+      - 5050:5000
     volumes:
-      - /home/robz/:/home
+      - ./data:/data
     networks:
       - diplo_network

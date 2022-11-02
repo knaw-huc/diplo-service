@@ -78,10 +78,10 @@ class Index:
             index="diplo",
             body={"query": {
                 "terms": {
-                    "_id": [id]
+                    "record": [id]
                 }
-            },
-                "_source": ["titel", "naam", "locatie", "organisatie", "onderwerp", "rol"]
+            }#,
+            #    "_source": ["titel", "naam", "locatie", "organisatie", "onderwerp", "rol"]
             }
         )
         if response["hits"]["total"]["value"] == 1:
@@ -101,7 +101,7 @@ class Index:
                     "match_all": {}},
                     "size": length,
                     "from": start,
-                    "_source": ["titel", "naam", "locatie", "organisatie", "onderwerp", "rol"],
+                    "_source": ["record","titel", "naam", "locatie", "organisatie", "onderwerp", "rol"],
                     "sort": [
                         {orderFieldName: {"order": "asc"}}
                     ]
