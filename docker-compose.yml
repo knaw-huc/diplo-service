@@ -25,16 +25,43 @@ services:
     networks:
       - diplo_network
 
+  kibana:
+      image: docker.elastic.co/kibana/kibana:7.5.2
+      environment:
+        ELASTICSEARCH_URL: http://elastic:9200
+        ELASTICSEARCH_HOSTS: '["http://elastic:9200"]'    
+      ports:
+        - 5601:5601 
+      networks:
+        - diplo_network         
+
+  # pyservice_prod:
+  #   build:
+  #     context: ./
+  #     dockerfile: Dockerfile
+  #   container_name: diplo_service
+  #   environment:
+  #     - VIRTUAL_HOST=diploservice.sd.di.huc.knaw.nl
+  #   ports:
+  #     - 5050:5000
+  #   volumes:
+  #     - ./data:/data
+  #   networks:
+  #     - diplo_network
+
   pyservice:
     build:
-      context: ./
-      dockerfile: Dockerfile
-    container_name: diplo_service
-    environment:
-      - VIRTUAL_HOST=diploservice.sd.di.huc.knaw.nl
+        context: ./
+        dockerfile: DockerfileMaart
     ports:
       - 5050:5000
+    environment:
+      USER: test
+      PASSWORD: test
+
     volumes:
       - ./data:/data
+      - ./src:/usr/src/app
+
     networks:
-      - diplo_network
+      - diplo_network      

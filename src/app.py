@@ -89,13 +89,21 @@ def get_collection():
 
 @app.route("/detail", methods=['GET'])
 def get_detail():
+    print('test')
     rec = request.args.get("rec")
-    file = etree.parse("/data/records/"+rec+".cmdi")
+    file = etree.parse("/data/records/"+rec)
     root = file.getroot()
     ns = {"cmd": "http://www.clarin.eu/cmd/","xml": "http://www.w3.org/XML/1998/namespace"}
     ttl = grab_value("./cmd:Components/cmd:Interview/cmd:Titel[@xml:lang='nl']", root, ns)
-    tel = grab_value("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Contact/cmd:Telephone", root, ns)
-    retStruc = {"_id": rec,"titel": ttl, "telefoon": tel}
+    titel = grab_value("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Naam/cmd:titel", root, ns)
+    voornaam = grab_value("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Naam/cmd:voornaam", root, ns)
+    achternaam = grab_value("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Naam/cmd:achternaam", root, ns)
+    tussenvoegsel = grab_value("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Naam/cmd:tussenvoegsel", root, ns)
+
+    loc = grab_list('locatie', "./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Carriere/cmd:Stationering/cmd:Locatie", root, ns)
+    opnamedata = grab_list('opnamedatum', "./cmd:Components/cmd:Interview/cmd:Opname/cmd:Opnamedatum", root, ns)
+    # print('loc' ,loc)
+    retStruc = {"_id": rec,"titel": ttl, "locaties": loc, "naam_titel": titel, "naam_voornaam": voornaam, "naam_achternaam": achternaam, "naam_tussenvoegsel": tussenvoegsel, "opnamedata": opnamedata}
     return json.dumps(retStruc)
 
 
