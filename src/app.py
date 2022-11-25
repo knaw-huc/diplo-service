@@ -156,8 +156,10 @@ def get_detail():
             # tag = item.QName(el.tag)
             # print('tag', tag)
             statio[tag] = el.text
-            statio_list.append(statio)
+            # statio_list.append(statio)
             # statio_struct.append(el)
+    
+        statio_list.append(statio)
 
 
 
