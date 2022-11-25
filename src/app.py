@@ -112,10 +112,11 @@ def get_detail():
     filename = "/data/records/" + rec
     if not path.exists(filename):
         return json.dumps('file does not exist')
+        # todo moet de structuur meegeven 
 
-    file = etree.parse("/data/records/" + rec)
-    if not path.exists("guru99.txt"):
-        return json.dumps('file does not exist')
+    file = etree.parse(filename)
+    # if not path.exists("guru99.txt"):
+    #     return json.dumps('file does not exist')
     root = file.getroot()
     print(root)
     ns = {"cmd": "http://www.clarin.eu/cmd/","xml": "http://www.w3.org/XML/1998/namespace"}
@@ -132,25 +133,35 @@ def get_detail():
     opnamedata = grab_list('opnamedatum', "./cmd:Components/cmd:Interview/cmd:Opname/cmd:Opnamedatum", root, ns)
     
     stationeringen = root.findall("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Carriere/cmd:Stationering", ns) # zonder slash pakt hij de xml elementen met slash alles wat eronder hangt
-    print(type(stationeringen))
+    # print(type(stationeringen))
     # loop through a list
 
     statio_list = []
     for item in stationeringen:
-        print(item)
+        # print('item:', item)
+        statio = {}
+
         for el in item:
             iek = ''
-            statio = {}
-            print ("\t", el)
-            iek = grab_value("./cmd:departement", item, ns)
-            iek = grab_value("./cmd:departement/cmd:Post", item, ns)
+            # statio = []
+            # print ("\t", el)
+            # iek = grab_value("./cmd:departement", item, ns)
+            iek = grab_value("./cmd:departement/cmd:Organisatie", item, ns)
+            print(el, type(el),  "-",el.tag, "-" ,el.text)
 
-            print('iek:', iek)
-            statio[el] = item
+            # print('iek:', iek)
+            tag = etree.QName(el.tag).localname
+            # print('tag: ', tag, 'localname: ', tag.localname)
+
+            # tag = item.QName(el.tag)
+            # print('tag', tag)
+            statio[tag] = el.text
             statio_list.append(statio)
             # statio_struct.append(el)
 
-    # print(statio_list, sep="\n")
+
+
+    print(statio_list, sep="\n")
 
     # print('\n'.join(map(str, statio_list))) 
 
@@ -177,7 +188,8 @@ def get_detail():
                 "naam_achternaam": achternaam,
                 "naam_tussenvoegsel": tussenvoegsel, 
                 "opnamedata": opnamedata,
-                "statio_post:" : statio_post
+                "statio_post:" : statio_post,
+                "stationeringen" : statio_list
     }
 
     return json.dumps(retStruc)
