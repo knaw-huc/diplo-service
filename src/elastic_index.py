@@ -101,7 +101,7 @@ class Index:
                     "match_all": {}},
                     "size": length,
                     "from": start,
-                    "_source": ["record","titel", "telefoon"],
+                    "_source": ["record","titel","titel_en", "telefoon"],
                     "sort": [
                         {orderFieldName: {"order": "asc"}}
                     ]
@@ -122,7 +122,7 @@ class Index:
                     }},
                     "size": length,
                     "from": start,
-                    "_source": ["titel", "naam", "locatie", "organisatie", "onderwerp", "rol"],
+                    "_source": ["titel", "titel_en", "naam", "locatie", "organisatie", "onderwerp", "rol"],
                     "sort": [
                         {orderFieldName: {"order": "asc"}}
                     ]
