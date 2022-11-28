@@ -133,51 +133,54 @@ def get_detail():
     
     stationeringen = root.findall("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Carriere/cmd:Stationering", ns) # zonder slash pakt hij de xml elementen met slash alles wat eronder hangt
     # stationeringen = grab_list("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Carriere/cmd:Stationering", ns) # zonder slash pakt hij de xml elementen met slash alles wat eronder hangt
+    interviewsessies = root.findall("./cmd:Components/cmd:Interview/cmd:Opname", ns)
+    # print(type(stationeringen)
+    print(interviewsessies)
 
-   # print(type(stationeringen))
     # loop through a list
 
     statio_list = []
     for item in stationeringen:
         # print('item:', item)
         statio = {}
-
-        for el in item:
-            # iek = ''
-            # statio = []
-            # print ("\t", el)
+        for el in item:    
             # iek = grab_value("./cmd:departement", item, ns)
             # iek = grab_value("./cmd:departement/cmd:Organisatie", item, ns)
-            # print(el, type(el),  "-",el.tag, "-" ,el.text)
-
-            # print('iek:', iek)
-            tag = etree.QName(el.tag).localname
-            print(tag)
+            # print(el, type(el),  "-",el.tag, "-" ,el.text)           
+            tag = etree.QName(el.tag).localname           
             # print('tag: ', tag, 'localname: ', tag.localname)
             if tag == 'Periode':
-                # print('hee')
                 statio[tag] = {'Van': '', 'Tot': ''}    
                 van = grab_value("./cmd:Van", el ,ns)
                 tot = grab_value("./cmd:Tot", el ,ns)
-                # print(van, tot)
                 statio[tag]['Van'] = van
-                statio[tag]['Tot'] = tot
-
-                # statio
+                statio[tag]['Tot'] = tot         
             else:
                 statio[tag] = el.text
 
-
-            # tag = item.QName(el.tag)
-            # print('tag', tag)
-            # statio_list.append(statio)
-            # statio_struct.append(el)
-    
         statio_list.append(statio)
 
+    sessie_list = []
+    for item in interviewsessies:
+    # print('item:', item)
+        sessie = {}
+        for el in item:    
+            # iek = grab_value("./cmd:departement", item, ns)
+            # iek = grab_value("./cmd:departement/cmd:Organisatie", item, ns)
+            # print(el, type(el),  "-",el.tag, "-" ,el.text)           
+            tag = etree.QName(el.tag).localname           
+            # print('tag: ', tag, 'localname: ', tag.localname)
+            if tag == 'Periode':
+                sessie[tag] = {'Van': '', 'Tot': ''}    
+                van = grab_value("./cmd:Van", el ,ns)
+                tot = grab_value("./cmd:Tot", el ,ns)
+                sessie[tag]['Van'] = van
+                sessie[tag]['Tot'] = tot         
+            else:
+                sessie[tag] = el.text
+        sessie_list.append(sessie)
 
-
-    print(statio_list, sep="\n")
+    # print(statio_list, sep="\n")
 
     # print('\n'.join(map(str, statio_list))) 
 
@@ -202,7 +205,8 @@ def get_detail():
                 "naam_achternaam": achternaam,
                 "naam_tussenvoegsel": tussenvoegsel, 
                 "opnamedata": opnamedata,
-                "stationeringen" : statio_list
+                "stationeringen" : statio_list,
+                "interviewsessies" : sessie_list
     }
 
     return json.dumps(retStruc)
