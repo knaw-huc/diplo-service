@@ -165,17 +165,23 @@ def get_detail():
     # print('item:', item)
         sessie = {}
         for el in item:    
-            # iek = grab_value("./cmd:departement", item, ns)
-            # iek = grab_value("./cmd:departement/cmd:Organisatie", item, ns)
-            # print(el, type(el),  "-",el.tag, "-" ,el.text)           
             tag = etree.QName(el.tag).localname           
             # print('tag: ', tag, 'localname: ', tag.localname)
-            if tag == 'Periode':
-                sessie[tag] = {'Van': '', 'Tot': ''}    
-                van = grab_value("./cmd:Van", el ,ns)
-                tot = grab_value("./cmd:Tot", el ,ns)
-                sessie[tag]['Van'] = van
-                sessie[tag]['Tot'] = tot         
+            sectielist = []
+            if tag == 'Inhoud':
+                # sectie = grab_list("./cmd:Sectie", el, ns)
+                secties = el.findall("./cmd:Sectie", ns)
+                for it in secties:
+                    sectie = {}
+                    onderwerp = grab_value("./cmd:Onderwerp", it, ns)
+                    tijdstip = grab_value("./cmd:Tijdstip", it, ns)
+                    periode = grab_value("./cmd:Periode", it, ns)
+                    sectie['onderwerp'] = onderwerp
+                    sectie['tijdstip'] = tijdstip
+                    sectie['periode'] = periode # TODO uitwerken
+                    sectielist.append(sectie)
+                  
+                sessie[tag] = sectielist
             else:
                 sessie[tag] = el.text
         sessie_list.append(sessie)
