@@ -123,17 +123,18 @@ def get_detail():
     ttl = grab_value("./cmd:Components/cmd:Interview/cmd:Titel[@xml:lang='nl']", root, ns)
     ttl_en = grab_value("./cmd:Components/cmd:Interview/cmd:Titel[@xml:lang='en']", root, ns)
     titel = grab_value("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Naam/cmd:titel", root, ns)
-
     voornaam = grab_value("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Naam/cmd:voornaam", root, ns)
     achternaam = grab_value("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Naam/cmd:achternaam", root, ns)
     tussenvoegsel = grab_value("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Naam/cmd:tussenvoegsel", root, ns)
     loc = grab_list('locatie', "./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Carriere/cmd:Stationering/cmd:Locatie", root, ns)
-    statio_post = grab_list('locatie', "./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Carriere/cmd:Stationering/cmd:Post", root, ns)
+    # statio_post = grab_list('locatie', "./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Carriere/cmd:Stationering/cmd:Post", root, ns)
 
     opnamedata = grab_list('opnamedatum', "./cmd:Components/cmd:Interview/cmd:Opname/cmd:Opnamedatum", root, ns)
     
     stationeringen = root.findall("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Carriere/cmd:Stationering", ns) # zonder slash pakt hij de xml elementen met slash alles wat eronder hangt
-    # print(type(stationeringen))
+    # stationeringen = grab_list("./cmd:Components/cmd:Interview/cmd:Geinterviewde/cmd:Carriere/cmd:Stationering", ns) # zonder slash pakt hij de xml elementen met slash alles wat eronder hangt
+
+   # print(type(stationeringen))
     # loop through a list
 
     statio_list = []
@@ -142,20 +143,33 @@ def get_detail():
         statio = {}
 
         for el in item:
-            iek = ''
+            # iek = ''
             # statio = []
             # print ("\t", el)
             # iek = grab_value("./cmd:departement", item, ns)
-            iek = grab_value("./cmd:departement/cmd:Organisatie", item, ns)
-            print(el, type(el),  "-",el.tag, "-" ,el.text)
+            # iek = grab_value("./cmd:departement/cmd:Organisatie", item, ns)
+            # print(el, type(el),  "-",el.tag, "-" ,el.text)
 
             # print('iek:', iek)
             tag = etree.QName(el.tag).localname
+            print(tag)
             # print('tag: ', tag, 'localname: ', tag.localname)
+            if tag == 'Periode':
+                # print('hee')
+                statio[tag] = {'Van': '', 'Tot': ''}    
+                van = grab_value("./cmd:Van", el ,ns)
+                tot = grab_value("./cmd:Tot", el ,ns)
+                # print(van, tot)
+                statio[tag]['Van'] = van
+                statio[tag]['Tot'] = tot
+
+                # statio
+            else:
+                statio[tag] = el.text
+
 
             # tag = item.QName(el.tag)
             # print('tag', tag)
-            statio[tag] = el.text
             # statio_list.append(statio)
             # statio_struct.append(el)
     
@@ -181,16 +195,13 @@ def get_detail():
     retStruc = {
                 "_id": rec,
                 "titel": ttl, 
-                "titel_en": ttl_en,
-
-                
+                "titel_en": ttl_en,    
                 "locaties": loc,
                 "naam_titel": titel,
                 "naam_voornaam": voornaam,
                 "naam_achternaam": achternaam,
                 "naam_tussenvoegsel": tussenvoegsel, 
                 "opnamedata": opnamedata,
-                "statio_post:" : statio_post,
                 "stationeringen" : statio_list
     }
 
