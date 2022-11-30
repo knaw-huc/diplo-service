@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+# import sys
 import re
 import shutil
 from glob import glob
@@ -19,4 +20,3 @@ for dir in lijst:
     l = p.findall(dir)
     print(l[0])
     shutil.copyfile(dir + '/metadata/record.cmdi', destpath + l[0] + '.cmdi')
-
